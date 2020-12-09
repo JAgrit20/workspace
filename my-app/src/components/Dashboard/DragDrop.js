@@ -4,11 +4,7 @@ import {v4 as uuid} from "uuid";
 import {auth,db} from '../../fbconfig'
 
 const itemsFromBackend = [
-  { id: uuid(), content: "First task" },
-  { id: uuid(), content: "Second task" },
-  { id: uuid(), content: "Third task" },
-  { id: uuid(), content: "Fourth task" },
-  { id: uuid(), content: "Fifth task" }
+  
 ];
 
     
@@ -43,6 +39,19 @@ const onDragEnd = (result, columns, setColumns) => {
     const destItems = [...destColumn.items];
     const [removed] = sourceItems.splice(source.index, 1);
     destItems.splice(destination.index, 0, removed);
+
+    var poschange = {
+      ...columns,
+      [source.droppableId]: {
+        ...sourceColumn,
+        items: sourceItems
+      },
+      [destination.droppableId]: {
+        ...destColumn,
+        items: destItems
+      }
+    }
+
     setColumns({
       ...columns,
       [source.droppableId]: {
@@ -54,11 +63,25 @@ const onDragEnd = (result, columns, setColumns) => {
         items: destItems
       }
     });
+
+    db.collection('workspace').doc('BEfYIIvfpiw7vhZEzVq9').set(poschange,{merge:true})
+
+
   } else {
     const column = columns[source.droppableId];
     const copiedItems = [...column.items];
     const [removed] = copiedItems.splice(source.index, 1);
     copiedItems.splice(destination.index, 0, removed);
+
+    var changeMe = {
+      ...columns,
+      [source.droppableId]: {
+        ...column,
+        items: copiedItems
+      }
+    }
+
+
     setColumns({
       ...columns,
       [source.droppableId]: {
@@ -66,6 +89,7 @@ const onDragEnd = (result, columns, setColumns) => {
         items: copiedItems
       }
     });
+    db.collection('workspace').doc('BEfYIIvfpiw7vhZEzVq9').set(changeMe,{merge:true})
   }
 };
 
@@ -81,11 +105,11 @@ function App() {
             console.log(data.data())
             var obj = {
                 'requested':data.data().requested,
-                'todo':data.data().Todo,
+                'Todo':data.data().Todo,
                 'Inprogress':data.data().Inprogress,
                 'done':data.data().done,
             }
-            console.log(obj)
+            // console.log(obj)
             setColumns(obj)
         })
     }, [])
@@ -106,7 +130,7 @@ function App() {
               }}
               key={columnId}
             >
-              <h2>{column.name}</h2>
+              <h4 className="white-text">{column.name}</h4>
               <div style={{ margin: 8 }}>
                 <Droppable droppableId={columnId} key={columnId}>
                   {(provided, snapshot) => {
@@ -116,8 +140,8 @@ function App() {
                         ref={provided.innerRef}
                         style={{
                           background: snapshot.isDraggingOver
-                            ? "lightblue"
-                            : "lightgrey",
+                            ? "transparent"
+                            : "transparent",
                           padding: 4,
                           width: 250,
                           minHeight: 500
@@ -132,7 +156,7 @@ function App() {
                             >
                               {(provided, snapshot) => {
                                 return (
-                                  <div
+                                  <div className="row"
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
@@ -141,14 +165,24 @@ function App() {
                                       padding: 16,
                                       margin: "0 0 8px 0",
                                       minHeight: "50px",
-                                      backgroundColor: snapshot.isDragging
-                                        ? "#263B4A"
-                                        : "#456C86",
                                       color: "white",
                                       ...provided.draggableProps.style
                                     }}
-                                  >
-                                    {item.content}
+                                  >       
+                              
+                                  <div className="col s12 ">
+                                    <div className="card " style={{ borderRadius:"20px",backgroundColor:'#19202D',margin:0}}>
+                                      <div className="card-content white-text">
+                                        <span className="card-title">Card Title</span>
+                                        <p> {item.content}</p>
+                                      </div>
+                                      <div className="card-action "style={{ borderRadius:"20px",padding:'1px 24px'}}>
+                                      <p className="red-text"> {item.Name} </p>
+                                      </div>
+                                    </div>
+                                 
+                                </div>
+                                 
                                   </div>
                                 );
                               }}
