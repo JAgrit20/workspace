@@ -14,3 +14,9 @@ code {
 html, body, #root{
   height: 100%;
 }
+
+
+.modal.modal-fixed-footer {
+  height: 40% !important;
+  border-radius: 24px;
+}

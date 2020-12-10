@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {v4 as uuid} from "uuid";
-import {auth,db} from '../../fbconfig'
+import {auth,db} from '../../fbconfig';
+import Avatar from '@material-ui/core/Avatar';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import Navbar from '../layout/Navbar';
+import M from 'materialize-css';
 
 const itemsFromBackend = [
   
@@ -93,16 +97,69 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
-function App() {
-   const  [columns, setColumns] = useState(columnsFromBackend)
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
 
+function App(props) {
+   const  [columns, setColumns] = useState(columnsFromBackend)
+   const [name, setName] = useState('');
+   const [taskName, setTaskName] = useState('');
+   const [people, setPeople] = useState([]);
+
+  const addTask = (e) => {
+    console.log(e.target.value)
+    setTaskName(e.target.value)
+  }
+
+  const handleAdd = () => {
+    let id = uuid()
+    //let Name = auth.currentUser.displayName;
+    let obj = {
+      id,
+      Name: 'Jagrit',
+      content: taskName
+    }
+
+    let existing = columns
+    let newOnes = {
+      ...columns,
+      "requested": {
+        ...(columns['requested']),
+        items: [...(columns['requested'].items),obj]
+      }
+    }
+
+    setColumns(newOnes)
+    db.collection('workspace').doc('FY062lw5iQqUKfMCa4dE').set(newOnes, {merge: true})
+  }
+
+  const handleDelete = (id, columnId) => {
+    let existing = columns[columnId].items;
+    let newItems = existing.filter(item => item.id !== id)
+
+    let posDelete = {
+      ...columns,
+    }
+
+    posDelete[columnId] = {
+      ...(columns[columnId]),
+      items: newItems
+    }
+    setColumns(posDelete)
+
+    db.collection('workspace').doc('FY062lw5iQqUKfMCa4dE').set(posDelete, {merge: true})
+  }
 
 
     useEffect(() => {
+      document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.sidenav');
+        var instances = M.Sidenav.init(elems);
+      });
         db.collection('workspace').doc('BEfYIIvfpiw7vhZEzVq9').get().then((data)=>{
             console.log(data.data())
+
+            setName(data.data().Name)
+            setPeople(data.data().People)
+
             var obj = {
                 'requested':data.data().requested,
                 'Todo':data.data().Todo,
@@ -116,6 +173,26 @@ function App() {
 
   
   return (
+    <>
+     <Navbar props={props}/>
+      <div className="valign-wrapper" style={{ position: "relative", height: "80px", width: "100%", backgroundColor: "#6771E3", borderRadius: "0 0 0 70px" }}>
+        <h5 style={{ margin: "0", paddingLeft: "69px", color: "white" }}>Ben's Workspace</h5>
+        <div className="white-text" style={{ position: "absolute", right: "40px" }}>
+          <AvatarGroup max={4}>
+          {
+            people && people.map((person, key) => {
+              return(
+                <Avatar key={key} alt={person.Name}>{person.Name[0]}</Avatar>
+              )
+            })
+          }
+          </AvatarGroup>
+        </div>
+      </div>
+
+      <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
+        <a className="btn-floating btn-large red modal-trigger" href="#modal1"><i className="material-icons">add</i></a>
+      </div>
     <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
       <DragDropContext
         onDragEnd={result => onDragEnd(result, columns, setColumns)}
@@ -199,7 +276,18 @@ function App() {
           );
         })}
       </DragDropContext>
+      <div id="modal1" className="modal modal-fixed-footer" style={{ marginTop: '200px' }}>
+          <div className="modal-content">
+            <h4>Add Task</h4>
+            <label for="textarea1">Enter task name</label>
+            <textarea id="textarea1" className="materialize-textarea" data-length="120" onChange={(e) => addTask(e)}></textarea>
+          </div>
+          <div className="modal-footer">
+            <a className="modal-close waves-effect waves-green btn-flat" onClick={() => handleAdd()}>Add Task</a>
+          </div>
+        </div>
     </div>
+    </>
   );
 }
 
