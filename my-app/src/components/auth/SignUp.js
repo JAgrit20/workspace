@@ -2,22 +2,38 @@ import React,{useState} from 'react'
 import {Link} from 'react-router-dom'
 import {auth,db} from '../../fbconfig'
  
-function SignIn() {
+function SignUp(props) {
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
 
-  const handleSubmit = (e) =>{
+  // const handleSubmit = (e) =>{
+  //   e.preventDefault();
+  //   auth.createUserWithEmailAndPassword(email,pass).then((data) =>{
+  //     db.collection('users').doc().set({
+  //       'Name':name,
+  //       'Email':email,
+  //       'UID': data.user.uid
+  //     })
+  //   })
+  // }
+  const handleSubmit = (e) => {
     e.preventDefault();
-    auth.createUserWithEmailAndPassword(email,pass).then((data) =>{
-      db.collection('users').doc().set({
-        'Name':name,
-        'Email':email,
-        'UID': data.user.uid
-      })
+    auth.createUserWithEmailAndPassword(email, pass).then((data) => {
+        data.user.updateProfile({
+            displayName: name
+        }).then(() => {
+            db.collection('users').doc().set({
+                'Name': name,
+                'Email': email,
+                'UID': data.user.uid
+            })
+        }).then(() => {
+            props.history.push('')
+        })
     })
-  }
+}
     return (
         <div className="row valign-wrapper" style={{height:"100vh"}}>
             <div className="container" >
@@ -46,7 +62,7 @@ function SignIn() {
   </button>
   </div> */}
   <input id="submit" type="submit" className="btn center-align col s3 offset-s3" style={{borderRadius:"14px"}} />
-  <Link to="/signup" style={{paddingLeft:"12px",fontSize:"22px"}}>Already have an account</Link>
+  <Link to="/sigIn" style={{paddingLeft:"12px",fontSize:"22px"}}>Already have an account</Link>
 
     </form>
     </div>
@@ -56,6 +72,6 @@ function SignIn() {
     )
 }
  
-export default SignIn
+export default SignUp
 
 

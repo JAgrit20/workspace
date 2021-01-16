@@ -5,7 +5,7 @@ import { auth } from '../../../src/fbconfig';
 import M from 'materialize-css'
 
  
-function SignUp() {
+function SignIn() {
   const [pass,setPass] = useState('')
   const [email,setEmail] = useState('')
 
@@ -20,7 +20,7 @@ function SignUp() {
     return (
         <div className="row valign-wrapper" style={{height:"100vh"}}>
             <div className="container" >
-    <form className="col s12 white " style={{borderRadius:"24px", padding:"20px"}} >
+    <form className="col s12 white " onSubmit={handleSubmit} style={{borderRadius:"24px", padding:"20px"}} >
         <h3 className="center-align">Sign In</h3>
       <div className="row " >
         <div className="input-field col s12 ">
@@ -50,4 +50,4 @@ function SignUp() {
     )
 }
  
-export default SignUp
+export default SignIn
