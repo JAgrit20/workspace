@@ -62,7 +62,7 @@ function SignUp(props) {
   </button>
   </div> */}
   <input id="submit" type="submit" className="btn center-align col s3 offset-s3" style={{borderRadius:"14px"}} />
-  <Link to="/sigIn" style={{paddingLeft:"12px",fontSize:"22px"}}>Already have an account</Link>
+  <Link to="/" style={{paddingLeft:"12px",fontSize:"22px"}}>Already have an account</Link>
 
     </form>
     </div>

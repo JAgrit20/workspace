@@ -40,7 +40,7 @@ function SignIn() {
   </button>
   </div> */}
   <input id="submit" type="submit" className="btn center-align col s3 offset-s3" style={{borderRadius:"14px"}} />
-  <Link to="/" style={{paddingLeft:"12px",fontSize:"22px"}}>Don't have an account</Link>
+  <Link to="/SignUp" style={{paddingLeft:"12px",fontSize:"22px"}}>Don't have an account</Link>
 
     </form>
     </div>

@@ -1,13 +1,8 @@
 
 import React,{useState} from 'react'
-import {Link} from 'react-router-dom'
-import { auth } from '../../../src/fbconfig';
-import M from 'materialize-css'
-import Avatar from '@material-ui/core/Avatar';
-import AvatarGroup from '@material-ui/lab/AvatarGroup';
-import navbar from '../layout/Navbar'
 
-function SignUp() {
+
+function homepage() {
     return (
         <div>
             <navbar/>
@@ -38,4 +33,4 @@ function SignUp() {
     )
 }
  
-export default SignUp
+export default homepage
