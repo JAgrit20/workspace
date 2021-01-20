@@ -170,7 +170,13 @@ function App(props) {
             setColumns(obj)
         })
     }, [])
-
+    useEffect(() => {
+      window.$(document).ready(function () {
+        window.$('.modal').modal();
+        window.$('#textarea1').val('');
+        window.$('input#input_text, textarea#textarea2').characterCounter();
+      });
+    }, [])
   
   return (
     <>
