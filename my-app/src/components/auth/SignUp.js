@@ -1,8 +1,10 @@
 import React,{useState} from 'react'
 import {Link} from 'react-router-dom'
 import {auth,db} from '../../fbconfig'
- 
+//  
 function SignUp(props) {
+
+
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
